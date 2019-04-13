@@ -17,15 +17,16 @@ configure :production do
   set :database, {adapter: 'postgresql', encoding: 'UTF-8', database: 'Users_DB', pool: 2, username: 'astax8828', password: '4993849'}
 end
 
-# Создаем сущность
+# Создаем пользовательскую модель user
 
 class User < ActiveRecord::Base
+  # включаем has_secure_password для шифрования
+  has_secure_password
 end
 
 
 # Маршрут home
 get '/' do
-
   erb :home
 end
 
@@ -37,7 +38,13 @@ end
 
 #Маршрут post signup, получаем данные формы регистрации
 post '/signup' do
-
+  user = User.new(params[:user_reg])
+  p params
+  if user.save
+    redirect "/login"
+  else
+    redirect "/signup"
+  end
 end
 
 
@@ -49,6 +56,7 @@ end
 
 #Маршрут post login, получаем данные формы входа
 post '/login' do
+
 
 end
 
