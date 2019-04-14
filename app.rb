@@ -28,12 +28,13 @@ class User < ActiveRecord::Base
   validates :email, email: true
   validates :password, presence: true, length: {minimum: 8}
   validates :password_confirmation, presence: true, length: {minimum: 8}
-
+  validates_uniqueness_of :email
 end
 
 
 # Маршрут home
 get '/' do
+
   erb :home
 end
 
@@ -54,8 +55,7 @@ post '/signup' do
     redirect "/login"
   else
     @error = @user.errors.messages
-
-    puts @error
+p @error
     erb :signup
   end
 end
