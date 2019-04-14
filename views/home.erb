@@ -1,8 +1,8 @@
 <h1>Welcome to Hogwarts</h1>
-
+<% if session[:user_id] != nil %>
+  <p>Вы вошли как <%= User.find(session[:user_id]).login %></p>
+  <% end %>
 <a href="/signup"><button>Sign Up</button></a>
 <a href="/login"><button>Log In</button></a>
 
-<% if @user != 0 %>
-<%= @user %>
-<% end %>
+

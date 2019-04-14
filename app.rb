@@ -34,13 +34,13 @@ end
 
 # Маршрут home
 get '/' do
-
+  
   erb :home
 end
 
 # Маршрут signup регистрации пользователей
 get '/signup' do
-
+  
   @user = User.new
   @error = @user.errors.messages
   erb :signup
@@ -52,10 +52,11 @@ post '/signup' do
   @user = User.new(params[:user_reg])
 
   if @user.save
-    redirect "/login"
+    session[:user_id] = @user.id
+    p session[:user_id]
+    redirect '/'
   else
     @error = @user.errors.messages
-p @error
     erb :signup
   end
 end
