@@ -1,10 +1,37 @@
 <form action="/signup" method="post">
 
   <p><strong>Логин:</strong>
-    <input maxlength="25" size="40" name="user_reg[login]"></p>
+    <input maxlength="25" size="40" name="user_reg[login]" value="<%= @user.login %>"></p>
+
+  <!--  Ошибка ввода поля-->
+  <% if @error[:login] && @error[:login].length > 0 %>
+    <div class="alert alert-danger"><%= @error[:login].first %></div>
+  <% end %>
+
   <p><strong>Email:</strong>
-    <input maxlength="25" size="40" name="user_reg[email]"></p>
+    <input maxlength="25" size="40" name="user_reg[email]" value="<%= @user.email %>"></p>
+  <!--  Ошибка ввода поля-->
+  <% if @error[:email] && @error[:email].length > 0 then %>
+    <div class="alert alert-danger"><%= @error[:email].first %></div>
+  <% end %>
+
   <p><strong>Пароль:</strong>
     <input type="password" maxlength="25" size="40" name="user_reg[password]"></p>
+  <!--  Ошибка ввода поля-->
+  <% if @error[:password] && @error[:password].length > 0 then %>
+    <div class="alert alert-danger"><%= @error[:password].first %></div>
+  <% end %>
+
+
+  <p><strong>Повторите пароль:</strong>
+    <input type="password" maxlength="25" size="40" name="user_reg[password_confirmation]"></p>
+  <!--  Ошибка ввода поля-->
+
+  <% if @error[:password_confirmation] && @error[:password_confirmation].length > 0 then %>
+    <div class="alert alert-danger"><%= @error[:password_confirmation].first %></div>
+  <% end %>
+
   <input type="submit">
 </form>
+
+

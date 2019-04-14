@@ -3,6 +3,7 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
+require 'email_validator'
 
 configure do
   enable :sessions
@@ -22,6 +23,12 @@ end
 class User < ActiveRecord::Base
   # включаем has_secure_password для шифрования
   has_secure_password
+  # Валидация формы регистрации
+  validates :login, presence: true, length: {minimum: 3}
+  validates :email, email: true
+  validates :password, presence: true, length: {minimum: 8}
+  validates :password_confirmation, presence: true, length: {minimum: 8}
+
 end
 
 
@@ -30,28 +37,34 @@ get '/' do
   erb :home
 end
 
-# Маршрут signup регистрации пользоваателей
+# Маршрут signup регистрации пользователей
 get '/signup' do
 
+  @user = User.new
+  @error = @user.errors.messages
   erb :signup
 end
 
 #Маршрут post signup, получаем данные формы регистрации
 post '/signup' do
-  user = User.new(params[:user_reg])
-  p params
-  if user.save
+  # Записываем данные из формы регистрации в таблицу бд
+  @user = User.new(params[:user_reg])
+
+  if @user.save
     redirect "/login"
   else
-    redirect "/signup"
+    @error = @user.errors.messages
+
+    puts @error
+    erb :signup
   end
 end
 
 
-# Маршрут login для входа пользоваателей
+# Маршрут login для входа пользователей
 get '/login' do
 
-  erb :signup
+  erb :login
 end
 
 #Маршрут post login, получаем данные формы входа

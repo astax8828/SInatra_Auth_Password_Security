@@ -44,9 +44,7 @@
   </nav>
 
   <div>
-    <% if @error && @error.length > 0 then %>
-      <div class="alert alert-danger"><%= @error %></div>
-    <% end %>
+
     <%= yield %>
   </div>
 
