@@ -80,20 +80,21 @@ end
 
 #Маршрут post login, получаем и записываем данные формы входа
 post '/login' do
-
+# записываем электроную почту нашего пользователя
   user = User.find_by(email: params["email"])
 
+# Если пароли сопадают то выполняется запись  id пользователя в сессию и редирект на страницу пользователя
   if user && user.authenticate(params[:password])
     session[:user_id] = user.id
     redirect '/user/' + User.find(session[:user_id]).login
   else
-    redirect "/failure"
+
+    redirect '/login'
   end
-  redirect '/login'
 end
 
 get '/user/:name'  do
-  
+
   erb :user
 end
 
