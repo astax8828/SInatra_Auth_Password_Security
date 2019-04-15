@@ -40,14 +40,20 @@ end
 
 # Маршрут signup регистрации пользователей
 get '/signup' do
+# Если выполнен вход происходит переадресация на страницу пользователя
+  if session[:user_id] != nil
+    redirect '/user/' + User.find(session[:user_id]).login
+  end
 
   @user = User.new
+  # Записываем сообщение ошибки валдации и передаем в шаблон signup
   @error = @user.errors.messages
   erb :signup
 end
 
 #Маршрут post signup, получаем и записываем данные формы регистрации
 post '/signup' do
+
   # Записываем данные из формы регистрации в таблицу бд
   @user = User.new(params[:user_reg])
 
@@ -65,7 +71,10 @@ end
 
 # Маршрут login для входа пользователей
 get '/login' do
-
+# Если выполнен вход происходит переадресация на страницу пользователя
+  if session[:user_id] != nil
+    redirect '/user/' + User.find(session[:user_id]).login
+  end
   erb :login
 end
 
@@ -83,7 +92,8 @@ post '/login' do
   redirect '/login'
 end
 
-get '/user/:name' do
+get '/user/:name'  do
+  
   erb :user
 end
 
