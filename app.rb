@@ -34,28 +34,29 @@ end
 
 # Маршрут home
 get '/' do
-  
+
   erb :home
 end
 
 # Маршрут signup регистрации пользователей
 get '/signup' do
-  
+
   @user = User.new
   @error = @user.errors.messages
   erb :signup
 end
 
-#Маршрут post signup, получаем данные формы регистрации
+#Маршрут post signup, получаем и записываем данные формы регистрации
 post '/signup' do
   # Записываем данные из формы регистрации в таблицу бд
   @user = User.new(params[:user_reg])
 
   if @user.save
+    #сохраняем id пользователя в куки
     session[:user_id] = @user.id
-    p session[:user_id]
     redirect '/'
   else
+    # записываем сообщение об ошибке и передаем в шаблон "signup"
     @error = @user.errors.messages
     erb :signup
   end
@@ -68,11 +69,26 @@ get '/login' do
   erb :login
 end
 
-#Маршрут post login, получаем данные формы входа
+#Маршрут post login, получаем и записываем данные формы входа
 post '/login' do
 
+  user = User.find_by(email: params["email"])
 
+  if user && user.authenticate(params[:password])
+    session[:user_id] = user.id
+    redirect '/user/' + User.find(session[:user_id]).login
+  else
+    redirect "/failure"
+  end
+  redirect '/login'
 end
 
+get '/user/:name' do
+  erb :user
+end
 
-
+# Выход пользователя
+get '/logout' do
+  session.clear
+  redirect '/'
+end
