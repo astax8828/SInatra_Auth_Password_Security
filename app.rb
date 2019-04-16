@@ -38,7 +38,6 @@ end
 
 # Маршрут home
 get '/' do
-
   erb :home
 end
 
@@ -95,19 +94,16 @@ post '/login' do
 
   # Проверяем существет такой пользователь если нет то выводим ошибку
   if email.nil?
-
     redirect '/login?error'
-
   end
 
 
   # Если пароли сопадают то выполняется запись  id пользователя в сессию и редирект на страницу пользователя
-  if email && email.authenticate(params[:password])
-
+  if email && email.authenticate(params[:password_login])
+    p "зашли"
     session[:user_id] = email.id
     redirect '/user/' + User.find(session[:user_id]).login
   else
-
     redirect '/login?error'
   end
 end

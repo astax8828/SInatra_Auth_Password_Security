@@ -2,13 +2,14 @@
 <% if session[:user_id] != nil %>
   <p>Вы вошли как <%= User.find(session[:user_id]).login %></p>
 <% end %>
+<% if session[:user_id] == nil %>
 <a href="/signup"><button>Sign Up</button></a>
-
+<% end %>
 
 <% if session[:user_id] == nil %>
   <a href="/login"><button>Log In</button></a>
 <% end %>
-
+<% if session[:user_id] != nil %>
 <a href="/logout"><button>Log Out</button></a>
-
+<% end %>
 
