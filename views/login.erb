@@ -2,8 +2,15 @@
 
 
   <p><strong>Email:</strong>
-    <input maxlength="25" size="40" name="email"></p>
+    <input maxlength="25" size="40" name="email_login"></p>
+  <!--  Ошибка ввода поля-->
+
   <p><strong>Пароль:</strong>
-    <input type="password" maxlength="25" size="40" name="password]"></p>
+  <input type="password" maxlength="25" size="40" name="password"></p>
+
   <input type="submit">
+
+  <% if @error %>
+    <div class="alert alert-danger">Вы не правильно ввели электроную почту ил логин</div>
+  <% end %>
 </form>

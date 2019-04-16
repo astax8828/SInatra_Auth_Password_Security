@@ -9,6 +9,7 @@ configure do
   enable :sessions
 end
 
+
 # Подключение к базе
 configure :development do
   set :database, {adapter: 'postgresql', encoding: 'UTF-8', database: 'Users_DB', pool: 2, username: 'astax8828', password: '4993849'}
@@ -17,6 +18,7 @@ end
 configure :production do
   set :database, {adapter: 'postgresql', encoding: 'UTF-8', database: 'Users_DB', pool: 2, username: 'astax8828', password: '4993849'}
 end
+
 
 # Создаем пользовательскую модель user
 
@@ -28,7 +30,9 @@ class User < ActiveRecord::Base
   validates :email, email: true
   validates :password, presence: true, length: {minimum: 8}
   validates :password_confirmation, presence: true, length: {minimum: 8}
-  validates_uniqueness_of :email
+  validates_uniqueness_of :email, :case_sensitive => false
+
+
 end
 
 
@@ -37,6 +41,7 @@ get '/' do
 
   erb :home
 end
+
 
 # Маршрут signup регистрации пользователей
 get '/signup' do
@@ -69,34 +74,50 @@ post '/signup' do
 end
 
 
-# Маршрут login для входа пользователей
+# Маршрут login, для входа пользователей
 get '/login' do
+
 # Если выполнен вход происходит переадресация на страницу пользователя
   if session[:user_id] != nil
     redirect '/user/' + User.find(session[:user_id]).login
   end
+
+  @error = params[:error]
+
   erb :login
 end
+
 
 #Маршрут post login, получаем и записываем данные формы входа
 post '/login' do
 # записываем электроную почту нашего пользователя
-  user = User.find_by(email: params["email"])
+  email = User.find_by(email: params["email_login"])
 
-# Если пароли сопадают то выполняется запись  id пользователя в сессию и редирект на страницу пользователя
-  if user && user.authenticate(params[:password])
-    session[:user_id] = user.id
+  # Проверяем существет такой пользователь если нет то выводим ошибку
+  if email.nil?
+
+    redirect '/login?error'
+
+  end
+
+
+  # Если пароли сопадают то выполняется запись  id пользователя в сессию и редирект на страницу пользователя
+  if email && email.authenticate(params[:password])
+
+    session[:user_id] = email.id
     redirect '/user/' + User.find(session[:user_id]).login
   else
 
-    redirect '/login'
+    redirect '/login?error'
   end
 end
 
-get '/user/:name'  do
+
+get '/user/:name' do
 
   erb :user
 end
+
 
 # Выход пользователя
 get '/logout' do
